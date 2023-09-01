@@ -1,7 +1,6 @@
 import axios from "axios"
 
-
-const baseURL = "http://43.200.184.226/api"
+const baseURL = "/api"
 const axiosInstance = axios.create({
     // baseURL: 'your_base_url_here',
     withCredentials: true,
@@ -13,17 +12,18 @@ const axiosInstance = axios.create({
 // GET APIs
 
 /**
+ * @return user의 모든 statement List형태로 리턴
  * @param NONE
- * @return
  * user의 Statement리스트를 리턴한다!!!
  * 실패시 콘솔창에 실패메시지 + error코드 뜸
  */
 const getStatementList = () =>{
     const apiURL = baseURL + `/statement/`
 
-    axiosInstance.get(apiURL)
+    return axiosInstance.get(apiURL)
     .then(response =>{
-        return(response.data)
+        console.log(response.data)
+        return(response)
     }    
     )
     .catch(error => {
@@ -33,35 +33,32 @@ const getStatementList = () =>{
 }
 /**
  * @param statementID (num)
- * @return
- * parm으로 받은 statementID에 해당하는statment를 리턴한다!!!
- * 실패시 콘솔창에 실패메시지 + error코드 뜸
+ * @return parm으로 받은 statementID에 해당하는statment를 리턴한다!!!
+ *
  */
-const getStatement = (statementID) => {
-    const apiURL = baseURL + `/statement/${statementID}/`
+const getStatement = async (statementID) => {
+    const apiURL = baseURL + `/statement/${statementID}/`;
 
-    axiosInstance.get(apiURL)
+    return axiosInstance.get(apiURL, statementID)
     .then(response =>{
-        return(response.data)
-    }    
-    )
-    .catch(error => {
-        console.log(error)
-        console.log('getStatement 실패!!!')
+        return(response)
     })
-}
+    .catch(error =>{
+        console.log(error)
+        console.log('getStatement실패!!')
+    })
+};
 /**
  * @param statementID (num)
- * @return
- * parm으로 받은 statementID에 해당하는statment의 post를 모두 리턴한다!!!
+ * @return statementID에 해당하는statment의 post를 배열형태로 모두 리턴한다!!!
  * 실패시 콘솔창에 실패메시지 + error코드뜸
  */
 const getPostList = (statementID) => {
     const apiURL = baseURL + `/statement/${statementID}/post/`
 
-    axiosInstance.get(apiURL)
+    return axiosInstance.get(apiURL)
     .then(response =>{
-        return(response.data)
+        return(response)
     }    
     )
     .catch(error => {
@@ -75,6 +72,7 @@ const getPostList = (statementID) => {
 
 /**
  * 매개변수로 받은 key에 해당하는 post의 content와 versionInfo로 수정함
+ * @return updating post objcet
  * @param statementID 
  * @param postID 
  * @param content 
@@ -83,15 +81,16 @@ const getPostList = (statementID) => {
  *  
  */
 const updatePost = (statementID, postID, content,versionInfo) => {
-    const apiURL = baseURL + `statement/${statementID}/post/${postID}/`;
+    const apiURL = baseURL + `/statement/${statementID}/post/${postID}/`;
     const requestData = {
         "content": content,
         "version_info": versionInfo
     }
-
-    axiosInstance.put(apiURL, requestData)
+    const finaldata = JSON.stringify(requestData)
+    console.log(finaldata)
+    return axiosInstance.put(apiURL, finaldata)
     .then(response =>{
-        return(response.data)
+        return(response)
     })
     .catch(error => {
         console.log(error)
@@ -101,22 +100,21 @@ const updatePost = (statementID, postID, content,versionInfo) => {
 }
 /**
  * Statement를 update하는 함수
- * 
- * @return 
- * 
+ * @return statment.title
  * @param {} statementID 
  * @param {} title 
  * 
  */
-const StatementUpdate = (statementID, title) => {
-    const apiURL = baseURL + `statement/${statementID}/`;
+const updateStatement = (statementID, title) => {
+    const apiURL = baseURL + `/statement/${statementID}/`;
     const requestData = {
         "title": title
     }
-
-    axiosInstance.put(apiURL, requestData)
+    const finaldata = JSON.stringify(requestData)
+    console.log(finaldata)
+    return axiosInstance.put(apiURL, finaldata)
     .then(response =>{
-        return(response.data)
+        return(response)
     })
     .catch(error => {
         console.log(error)
@@ -126,21 +124,22 @@ const StatementUpdate = (statementID, title) => {
 // Post APIs
 
 /**
- * 
+ * @return POST요청으로 만든 post객체 data 리턴!!
  * @param {*} statementID 
  * @param {*} content 
  * @param {*} versionInfo 
  */
-const Createpost = (statementID, content, versionInfo) => {
+const createpost = (statementID, content, versionInfo) => {
     const apiURL = baseURL + `/statement/${statementID}/post/`;
     const requestData = {
         "content": content,
         "version_info": versionInfo
     }
-
-    axiosInstance.post(apiURL, requestData)
+    const finaldata = JSON.stringify(requestData)
+    console.log(finaldata)
+    return axiosInstance.post(apiURL, finaldata)
     .then(response =>{
-        return(response.data)
+        return(response)
     })
     .catch(error => {
         console.log(error)
@@ -149,11 +148,26 @@ const Createpost = (statementID, content, versionInfo) => {
 
 
 }
-
-const statementCreate = () => {
+/**
+ * @return reponse.data로 statment.title과 post객체정보 리턴
+ * @param {*} title 
+ * @param {*} content 
+ * @param {*} versionInfo
+ */
+const createStatement = (title, content, versionInfo) => {
     const apiURL = baseURL + `/statement/`;
+    const requsePost = {
+        "content": content
+    }
     
-    axiosInstance.post(apiURL)
+    const requestData = {
+        "title": title,
+        "posts": [requsePost],
+        "versionInfo" : versionInfo 
+    }
+    const finaldata = JSON.stringify(requestData)
+    console.log(finaldata)
+    return axiosInstance.post(apiURL, finaldata)
     .then(response =>{
         return(response.data)
     })
@@ -164,15 +178,21 @@ const statementCreate = () => {
     
 }
 //delete APIs
+/**
+ * @returns NONe
+ * @param {*} statementID 
+ * @param {*} title 
+ */
 const deleteStatement = (statementID, title) => {
     const apiURL = baseURL + `/statement/${statementID}/`;
     const requestData = {
         "title": title,
     }
-
-    axiosInstance.post(apiURL, requestData)
+    const finaldata = JSON.stringify(requestData)
+    console.log(finaldata)
+    return axiosInstance.delete(apiURL, finaldata)
     .then(response =>{
-        return(response.data)
+        return(response)
     })
     .catch(error => {
         console.log(error)
@@ -181,7 +201,7 @@ const deleteStatement = (statementID, title) => {
 }   
 
 export {getPostList, getStatement, getStatementList,
-    updatePost,  StatementUpdate, 
-    Createpost, statementCreate, deleteStatement}
+    updatePost,  updateStatement, 
+    createpost, createStatement, deleteStatement}
 
 

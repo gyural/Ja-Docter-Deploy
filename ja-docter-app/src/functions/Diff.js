@@ -24,7 +24,7 @@ const Diff = ({ string1 = "", string2 = "", mode = "characters" }) => {
   if (mode === "sentences")
     groups = diff.diffSentences(string1, string2, { newlineIsToken: true });
 
-  console.log(`mode ${mode} groups`, groups);
+  // console.log(`mode ${mode} groups`, groups);
   const mappedNodes = groups.map((group) => {
     let { value, added, removed } = group;
     if ((added || removed) && !/\S/.test(value)) {
@@ -38,7 +38,7 @@ const Diff = ({ string1 = "", string2 = "", mode = "characters" }) => {
     let nodeStyles;
     if (added) nodeStyles = styles.added;
     if (removed) nodeStyles = styles.removed;
-    return <span style={nodeStyles}>{value}</span>;
+    return <span style={nodeStyles}>{value.replace(/¶/g, '')}</span>;
   });
   
   return <span style={{ whiteSpace: "pre-line" }}>{mappedNodes}</span>;
