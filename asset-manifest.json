@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/Ja-Docter-Deploy/static/css/main.073c9b0a.css",
-    "main.js": "/Ja-Docter-Deploy/static/js/main.d79c1cd4.js",
+    "main.js": "/Ja-Docter-Deploy/static/js/main.162ff322.js",
     "static/js/787.e8cef188.chunk.js": "/Ja-Docter-Deploy/static/js/787.e8cef188.chunk.js",
     "static/media/docterImage1.png": "/Ja-Docter-Deploy/static/media/docterImage1.6de13c792930ea0a3cca.png",
     "static/media/poster.jpg": "/Ja-Docter-Deploy/static/media/poster.4b8f6bb16a10393d85ca.jpg",
     "index.html": "/Ja-Docter-Deploy/index.html",
     "main.073c9b0a.css.map": "/Ja-Docter-Deploy/static/css/main.073c9b0a.css.map",
-    "main.d79c1cd4.js.map": "/Ja-Docter-Deploy/static/js/main.d79c1cd4.js.map",
+    "main.162ff322.js.map": "/Ja-Docter-Deploy/static/js/main.162ff322.js.map",
     "787.e8cef188.chunk.js.map": "/Ja-Docter-Deploy/static/js/787.e8cef188.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.d79c1cd4.js"
+    "static/js/main.162ff322.js"
   ]
 }
