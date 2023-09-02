@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import HomeRight from './HomeRight';
 import HomeLeft from './HomeLeft'
@@ -8,20 +8,20 @@ const Container = styled.div`
   display: flex;
   height: 100vh;
   box-sizing: border-box;
-  padding-top: 20px;
+  padding-top: 21px;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
 `;
 export default function HomePage() {
-
     
     return (
         <Container>
-
-            <HomeLeft></HomeLeft>
-            <HomeScreen></HomeScreen>
+            <HomeLeft 
+            ></HomeLeft>
+            <HomeScreen
+            ></HomeScreen>
             <HomeRight></HomeRight>
 
         </Container>

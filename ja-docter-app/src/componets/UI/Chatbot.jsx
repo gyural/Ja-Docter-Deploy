@@ -1,6 +1,5 @@
 import React, {useState, useRef, useEffect, version} from "react";
 import styled from "styled-components"
-import ChatBotSwitch from "../../images/ChatBotSwitch.png";
 import submitButton from "../../images/message-submit.png"
 import { postGPTCall } from "../../APIs/Swagger";
 import post1 from "../../VirtualData/postsample.json"
@@ -106,8 +105,9 @@ const ImageWrapper = styled.div`
     width: 50px;
     height: 50px;
     position: absolute;
-    bottom: 0;
-    right: -60px;
+    bottom: -40px;
+    right: -30px;
+    
     img{
         display: block;
         width: 100%;
@@ -155,10 +155,11 @@ function Chatbot(props){
     const targetPost = props.post
     const statementId = props.statementId
     const newVersion = props.newVersion
+    const [event, setEvent] = props.EventCheck
+    const switchOn = props.chatON
     /**
      * 챗봇 비/ 활성화 관리 State
      */
-    const [switchOn, setSwitchOn] = useState(false)
     const [inputMessage, setInputMessage] = useState()
     const [isLoading, setIsLoading] = useState(false)
     const startMessage = {
@@ -196,9 +197,7 @@ function Chatbot(props){
     /** 
      * 챗봇을 비/활성화 스위치 관리 함수
     */
-    const handleSwitch = () => {
-        setSwitchOn(!switchOn)
-    } 
+    
     /**
      * input 메시지를 state로 관리하게 하는 함수
      */
@@ -232,7 +231,6 @@ function Chatbot(props){
             setMessages([...messages, newMessage])
             console.log(`메시지들 출력`)
             setIsLoading(true)
-            const order = "미래계획을 구체적으로 서술해줘"
             const res = await postGPTCall(
                 ToDoubleslash(targetPost)
                 , inputMessage)
@@ -283,7 +281,7 @@ function Chatbot(props){
             zIndex: switchOn ? '2' : '0'
           }}
         >
-        {switchOn ? (
+        {switchOn && (
             <ChattingWindow>
                 <ChatAllContainer ref={chatContainerRef}>
                         {
@@ -331,6 +329,7 @@ function Chatbot(props){
                                                     console.log('수정본 추가 내용!!!');
                                                     console.log(message.contents);
                                                     versionCreate(message.contents, "editVersion!!")
+                                                    setEvent(!event)
                                                   }}
                                                 >
                                                   적용하기
@@ -429,16 +428,11 @@ function Chatbot(props){
                     >
                         <img src={submitButton} alt="제출하기 이미지" />
                 </ImageWrapper2>
-                <ImageWrapper onClick={handleSwitch}>
-                    <img src={ChatBotSwitch} alt="챗봇 스위치 이미지" />
-                </ImageWrapper>
+                
                 
             </ChattingWindow>
-        ) : (
-            <ImageWrapper onClick={handleSwitch}>
-                <img src={ChatBotSwitch} alt="챗봇 스위치 이미지" />
-            </ImageWrapper>
-        )}
+        ) 
+    }
         </Container>
     )
 }

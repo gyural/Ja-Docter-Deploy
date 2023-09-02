@@ -58,6 +58,7 @@ const StyledPostEditor = styled.div`
 const PostEditor = (props) => {
   const { inheritContent = '', inheritTitle = '' , isNew = true
         , statementID, postID} = props;
+  const setEdit = props.setEdit
   console.log(inheritContent, inheritTitle)
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('')
@@ -114,13 +115,30 @@ const PostEditor = (props) => {
       <div className="char-count">
         {content.length} / 2000
       </div>
-      <button 
+
+      {isNew? (
+        <button 
+        onClick={() => {
+          handleSubmit(isNew, statementID, postID)
+          navigate('/');
+        }}
+        >
+          등록하기
+        </button>
+      ) : (
+        <button 
       onClick={() => {
-        handleSubmit(isNew, statementID, postID);
+        const [event, setEvent] = props.Event
+        handleSubmit(isNew, statementID, postID)
+        window.alert('편집이 완료되었습니다.')
+        setEvent(!event)
+        setEdit(false)
       }}
       >
-        {isNew ? '등록하기' : '편집하기'}
+        편집하기
       </button>
+      )}
+      
     </StyledPostEditor>
   );
 };

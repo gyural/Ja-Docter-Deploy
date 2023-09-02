@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import leftimg from "../../images/left.png";
 import rightimg from "../../images/right.png";
-import { deleteStatement, getPostList, getStatement } from '../../APIs/Statemet';
+import { deleteStatement, getPostList, getStatement, spellCheck } from '../../APIs/Statemet';
+import ChatBotimg from "../../images/ChatBotSwitch.png";
+
 import Chatbot from '../UI/Chatbot';
 import Diff from '../../functions/Diff';
 import PostEditor from '../statement/PostEditor';
 import HomeLeft from './HomeLeft';
+import { useNavigate } from 'react-router-dom';
 
 const PageContainer = styled.div`
   display: flex;
@@ -155,26 +158,50 @@ const ChatBotWrapper = styled.div`
   position: absolute;
   left: -490px;
   top: 20px;
+`;
+
+const ChatBotSwitch = styled.div`
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  bottom: -50px;
+  right: -10px;
+  z-index: 10;
+  img{
+      display: block;
+      width: 100%;
+      height: 100%;
+  }
+  &:hover{
+      background-color: #ccc
+
+  }
 `
 function  DetailsPage() {
+  const navigate = useNavigate()
   const [id, setId] = useState()
+  const [chatON, setChatON] = useState()
   const [statementData, setStatementData] = useState([{
     version : '',
     content : ''
   }])
+  const [eventChecker, setEventChecker] = useState(false)
   const [focusID, setFocusID] = useState(0)
   const [postsLength, setPostLength] = useState()
   const [title, setTitle] = useState('로딩중 입니다..')
   const [diffMode, setDiffMode] = useState(false)
   const [editMode , setEditMode] = useState(false)
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
+    const searchParams = new URLSearchParams(window.location.href.split('?')[1]);
     const statementId = searchParams.get("id");
+    console.log('url주소!!!!')
+    console.log(searchParams)
     console.log(`렌더링 해야할 stateId = ${statementId}`);
     const fetchPostData = async () => {
       try {
         const res = await getPostList(statementId);
         // 처음버전 가져오기
+        console.log(res.data)
         const recentPost = res.data[0]
         console.log(recentPost)
         setStatementData(res.data)
@@ -200,7 +227,7 @@ function  DetailsPage() {
     fetchTitleData();
     fetchPostData(); // 비동기 함수 호출
 
-  }, []);
+  }, [eventChecker]);
   
   const handleArrowButtonClick = (targetID) => {
     if (targetID >= 0 && targetID < postsLength){
@@ -231,7 +258,9 @@ function  DetailsPage() {
               inheritTitle={title.title}
               isNew={false}
               statementID={id}
-              postID={statementData[focusID].id}
+              postID={statementData[focusID].post_order}
+              Event = {[eventChecker, setEventChecker]}
+              setEdit = {setEditMode}
             >
             <Divider />
           <div className="char-count">
@@ -271,6 +300,7 @@ function  DetailsPage() {
                 position: 'absolute',
                 bottom: '25%',
                 left: '-4%',
+                zIndex: 1,
               }}
               onClick={() => handleArrowButtonClick(focusID - 1)}
             >
@@ -284,6 +314,7 @@ function  DetailsPage() {
                 position: 'absolute',
                 bottom: '25%',
                 right: '-4%',
+                zIndex: 1,
               }}
               onClick={() => handleArrowButtonClick(focusID + 1)}
             >
@@ -295,10 +326,20 @@ function  DetailsPage() {
           <BoxContainer>
             <BoxTitle>{title.title}</BoxTitle>
             <ChatBotWrapper>
+              <ChatBotSwitch
+                onClick = {()=>{
+                  setChatON(!chatON)
+                  console.log('아이콘 클릭')
+                }}
+              >                    
+                <img src={ChatBotimg} alt="챗봇 스위치 이미지" />
+              </ChatBotSwitch>
               <Chatbot
+                chatON = {chatON}
                 post={statementData[focusID].content}
                 statementId={id}
                 newVersion={focusID + 1 === postsLength}
+                EventCheck = {[eventChecker, setEventChecker]}
               ></Chatbot>
             </ChatBotWrapper>
             <div>
@@ -334,7 +375,20 @@ function  DetailsPage() {
               편집하기
             </Button>
             <Button onClick={copytext}>복사하기</Button>
-            <Button>맞춤법 검사</Button>
+            <Button
+              onClick={
+                async () =>{
+                  const res =  await spellCheck(id, focusID+1)
+                  if(res){
+                    console.log(res)
+                    setEventChecker(!eventChecker)
+                  }
+                  else{
+                    console.alert('맞춤법 검사 실패 다시 시도해 주세요')
+                  }
+                }
+              }
+            >맞춤법 검사</Button>
             <Button
               focus={diffMode}
               onClick={() => setDiffMode(!diffMode)}
@@ -352,9 +406,12 @@ function  DetailsPage() {
                 cursor: 'pointer',
                 borderRadius: '10px',
               }}
-              onClick = {()=>{
-                deleteStatement(id, title.title)
-
+              onClick = {
+                async()=>{
+                const res = await deleteStatement(id, title.title)
+                console.log(res)
+                window.alert('삭제가 완료되었습니다!!')
+                navigate('/')
               }
               }
             >

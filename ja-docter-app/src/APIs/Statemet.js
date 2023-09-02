@@ -1,13 +1,9 @@
 import axios from "axios"
+import instance from "./Instance"
+// const baseURL =  "http://127.0.0.1:8000/api"
+const baseURL =  "/api"
+// https://cors-anywhere.herokuapp.com/https://api.dropper.tech/covid19/status/korea?
 
-const baseURL = "/api"
-const axiosInstance = axios.create({
-    // baseURL: 'your_base_url_here',
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
 
 // GET APIs
 
@@ -20,7 +16,7 @@ const axiosInstance = axios.create({
 const getStatementList = () =>{
     const apiURL = baseURL + `/statement/`
 
-    return axiosInstance.get(apiURL)
+    return instance.get(apiURL)
     .then(response =>{
         console.log(response.data)
         return(response)
@@ -39,7 +35,7 @@ const getStatementList = () =>{
 const getStatement = async (statementID) => {
     const apiURL = baseURL + `/statement/${statementID}/`;
 
-    return axiosInstance.get(apiURL, statementID)
+    return instance.get(apiURL, statementID)
     .then(response =>{
         return(response)
     })
@@ -56,7 +52,7 @@ const getStatement = async (statementID) => {
 const getPostList = (statementID) => {
     const apiURL = baseURL + `/statement/${statementID}/post/`
 
-    return axiosInstance.get(apiURL)
+    return instance.get(apiURL)
     .then(response =>{
         return(response)
     }    
@@ -88,7 +84,7 @@ const updatePost = (statementID, postID, content,versionInfo) => {
     }
     const finaldata = JSON.stringify(requestData)
     console.log(finaldata)
-    return axiosInstance.put(apiURL, finaldata)
+    return instance.put(apiURL, finaldata)
     .then(response =>{
         return(response)
     })
@@ -112,7 +108,7 @@ const updateStatement = (statementID, title) => {
     }
     const finaldata = JSON.stringify(requestData)
     console.log(finaldata)
-    return axiosInstance.put(apiURL, finaldata)
+    return instance.put(apiURL, finaldata)
     .then(response =>{
         return(response)
     })
@@ -137,7 +133,7 @@ const createpost = (statementID, content, versionInfo) => {
     }
     const finaldata = JSON.stringify(requestData)
     console.log(finaldata)
-    return axiosInstance.post(apiURL, finaldata)
+    return instance.post(apiURL, finaldata)
     .then(response =>{
         return(response)
     })
@@ -167,7 +163,7 @@ const createStatement = (title, content, versionInfo) => {
     }
     const finaldata = JSON.stringify(requestData)
     console.log(finaldata)
-    return axiosInstance.post(apiURL, finaldata)
+    return instance.post(apiURL, finaldata)
     .then(response =>{
         return(response.data)
     })
@@ -190,7 +186,7 @@ const deleteStatement = (statementID, title) => {
     }
     const finaldata = JSON.stringify(requestData)
     console.log(finaldata)
-    return axiosInstance.delete(apiURL, finaldata)
+    return instance.delete(apiURL, finaldata)
     .then(response =>{
         return(response)
     })
@@ -199,9 +195,25 @@ const deleteStatement = (statementID, title) => {
         console.log('statementCreate 실패!!!')
     })
 }   
-
+/**
+ * @return 맞춤법 수정완료된 텍스트를 리턴
+ * @param {*} statmentID 
+ * @param {*} postID 
+ * @returns 
+ */
+const spellCheck = (statmentID, postID) =>{
+    const apiURL = baseURL + `/statement/${statmentID}/post/${postID}/spell_check/`
+    return instance.get(apiURL)
+    .then(response =>{
+        return(response)
+    })
+    .catch(error =>{
+        console.log(error)
+        console.log('spellCheck 실패!!!')
+    })
+}
 export {getPostList, getStatement, getStatementList,
     updatePost,  updateStatement, 
-    createpost, createStatement, deleteStatement}
+    createpost, createStatement, deleteStatement, spellCheck}
 
 

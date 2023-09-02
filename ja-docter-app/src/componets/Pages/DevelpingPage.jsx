@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import img1 from '../../images/docterImage1.png'
 import { FadeLoader } from "react-spinners";
+import { useNavigate } from 'react-router-dom';
 
 const override = {
   display: "flex",
@@ -20,6 +21,7 @@ const Title = styled.div`
     color: #F0790A;
     font-size: 42px;
     font-weight: 700;
+    cursor: pointer;
 `;
 const Messages = styled.div`
     width: 46vw;
@@ -69,9 +71,16 @@ const Image2 = styled.div`
     
 `
 export default function DevelpingPage() {
+  const navigate = useNavigate()
+
   return (
     <Container>
-        <Title>
+        <Title
+            onClick={()=>{
+              navigate('/')
+              }
+            }
+        >
             자소서 닥터
         </Title>
         <Messages>

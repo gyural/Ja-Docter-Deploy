@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getStatementList } from '../../APIs/Statemet';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../App';
 const Container = styled.div`
   width: 100%;
   max-width: 800px;
@@ -125,6 +126,7 @@ const StatementItem = styled.div`
 
 function HomeScreen() {
   const [popupVisible, setPopupVisible] = useState(false);
+  const [authInfo, setAuthInfo] = useContext(AuthContext)
   const [testList, setTestList] = useState([{
     title: '로딩중 입니다',
     posts: [
@@ -133,34 +135,54 @@ function HomeScreen() {
     ]
     }
   ])
-  const navigate = useNavigate() 
+  const navigate = useNavigate()
+  const isLoggedIn = authInfo.isLoggedIn;
+  const accountID = authInfo.id;
   function StatementListComponent({ data }) {
       console.log(data)
-      return (
-        <StatementList>
-          {data.map((item, index) => (
-            <StatementItem key={index}
-              onClick={()=>{
-                navigate(`/statement?id=${item.id}`)
-              }}
-            >
-              <h3>제목 : {item.title}</h3>
-              <p>{truncateString(item.posts[0].content, 45)}</p>
-            </StatementItem>
-          ))}
-        </StatementList>
-      );
-    }
+      if(Array.isArray(data)){
+        return (
+          <StatementList>
+            {data.map((item, index) => (
+              <StatementItem key={index}
+                onClick={()=>{
+                  navigate(`/statement?id=${item.statement_order}`)
+                }}
+              >
+                <h3>제목 : {item.title}</h3>
+                <p>{truncateString(item.posts[0].content, 45)}</p>
+              </StatementItem>
+            ))}
+          </StatementList>
+        );
+
+      }
+      else{
+        return (
+          <StatementList>
+              <StatementItem
+                
+              >
+                <h3>데이터 가져오기 실패!!</h3>
+                <p>데이터를 가지고오는데 실패했습니다!!</p>
+              </StatementItem>
+          </StatementList>
+        )
+        }
+        
+      }
 
   /** 페이지 첫 랜더링시만 StatementList 가져오기 */
   useEffect(() => {
     const fetchData = async () => {
-      try {
         const res = await getStatementList();
-        setTestList(res.data);
-      } catch (error) {
+        if(res){
+
+          setTestList(res.data);
+        }
+      else {
         // 오류 처리
-        console.error('Error fetching data:', error);
+        console.log('Error fetching data:');
       }
     };
   
@@ -204,7 +226,7 @@ function HomeScreen() {
                 <StatementItem 
                   key={index}
                   onClick={()=>{
-                    navigate(`/statement?id=${item.id}`)
+                    navigate(`/statement?id=${item.statement_order}`)
                 }}
                 >
                   <h3

@@ -1,18 +1,26 @@
 import axios from "axios"
 import { useContext } from "react";
 import api from './API'
+import instance from "./Instance";
+const baseURL = '/api'
+// const baseURL = 'http://43.200.184.226/api'
+
 
 const login = async (email, pw, isChecked) => {
     // axios를 이용하여 jwt 로그인 요청을 보낸다.
-    return await axios.post('http://localhost:8000/api/user/auth/', {
+    const apiURL = baseURL + '/user/auth/'
+    const requestData = {
         'email': email,
-        'password': pw,
-    }, {withCredentials: true}).then((response) => {
+        'password': pw
+    }
+    const finaldata = JSON.stringify(requestData)
+    console.log(finaldata)
+    return await instance.post(apiURL, finaldata)
+    .then((response) => {
         const accessToken = response.data.token.access;
-        axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        instance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
         if(isChecked)
-            localStorage.setItem("access", accessToken);
-
+            localStorage.setItem('access_token', accessToken);
         alert('로그인 성공');
         // 벡엔드에서 httponly 쿠키로 토큰들이 전송되어 로그인됨
         // navigate('/')
@@ -25,10 +33,15 @@ const login = async (email, pw, isChecked) => {
 
 const register = (email, pw) => {
     // axios를 이용하여 jwt 회원가입 요청을 보낸다.
-    return axios.post('http://localhost:8000/api/user/register/',{
+    const apiURL = baseURL + '/user/register/'
+    const requestData = {
         'email': email,
         'password': pw
-    }, {withCredentials: true}).then((response) => {
+    }
+    const finaldata = JSON.stringify(requestData)
+    console.log(finaldata)
+    return instance.post(apiURL, finaldata)
+    .then((response) => {
         console.log(response.data);
         console.log('회원가입 성공')
         return true;
@@ -41,7 +54,7 @@ const register = (email, pw) => {
     })
 }
 const refresh = async () => {
-    axios.post('http://localhost:8000/api/user/auth/refresh', {withCredentials:true})
+    instance.post('/api/user/auth/refresh', {withCredentials:true})
     .then((response)=>{
         console.log('token refreshed');
     })
@@ -62,7 +75,7 @@ const refresh_interceptor = () => {
             originalRequest._retry = true;
       
             try {
-              const response = await axios.post('http://localhost:8000/api/user/token/refresh/');
+              const response = await instance.post('/api/user/token/refresh/');
 
               return api(originalRequest);
             } catch (error) {

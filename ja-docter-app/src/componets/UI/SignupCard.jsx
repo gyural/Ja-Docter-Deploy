@@ -85,7 +85,7 @@ function SignupCard(props) {
             console.log(formData);
             if (register(formData.id, formData.password)) {
                 // navigate("/signin");
-                alert('회원가입 성공!!!')
+                // alert('회원가입 성공!!!')
             }
         } else {
             alert("비밀번호 재확인이 일치하지 않습니다.");

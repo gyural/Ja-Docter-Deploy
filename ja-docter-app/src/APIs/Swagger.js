@@ -1,13 +1,8 @@
 import axios from "axios"
-
+import instance from "./Instance";
+const test = 123;
 const baseURL = "/api"
-const axiosInstance = axios.create({
-    // baseURL: 'your_base_url_here',
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
+
 /**
  * @return
  * @param {*} content 
@@ -23,7 +18,7 @@ const postGPTCall = (content, order) =>{
 
     const finaldata = JSON.stringify(requestData)
     console.log(finaldata)
-    return axiosInstance.post(apiURL, finaldata)
+    return instance.post(apiURL, finaldata)
     .then(res =>{
         return (res)
     })
