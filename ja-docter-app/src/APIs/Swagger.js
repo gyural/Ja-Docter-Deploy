@@ -1,7 +1,9 @@
 import axios from "axios"
 import instance from "./Instance";
 const test = 123;
-const baseURL = "/api"
+// const baseURL = "/api"
+const baseURL = 'https://server.ja-doctor.net/api'
+// const baseURL = 'http://127.0.0.1:8000/api'
 
 /**
  * @return

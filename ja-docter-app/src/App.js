@@ -6,7 +6,7 @@ import { createContext, useState, useEffect } from "react";
 import DevelpingPage from "./componets/Pages/DevelpingPage";
 import DetailsPage from "./componets/Pages/DetailsPage";
 import WriteStatement from "./componets/Pages/WriteStatement";
-import { refresh_interceptor } from "./APIs/Auth";
+import { getUserAuth, refresh_interceptor } from "./APIs/Auth";
 
 const AuthContext = createContext();
 function App() {
@@ -15,6 +15,7 @@ function App() {
   useEffect(() => {
     // 페이지 로드 시 localStorage에서 access 토큰을 읽어옴
     const storedToken = localStorage.getItem('access_token');
+    console.log(`로컬스토리지에 getItem 요청 : ${storedToken}`)
     const isAuthenticated = !!storedToken; // 토큰이 존재하면 인증됨
     setAuthInfo(isAuthenticated);
     console.log(`로그인 여부 ${isAuthenticated}`)

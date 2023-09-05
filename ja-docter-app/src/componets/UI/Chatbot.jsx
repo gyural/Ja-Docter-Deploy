@@ -11,7 +11,8 @@ import { createpost } from "../../APIs/Statemet";
 const Container = styled.div`
     width: 464px;
     height: 554px;
-    position: relative;
+    position: absolute;
+    left: 0px;
 `;
 
 const ChattingWindow = styled.div`
@@ -238,8 +239,9 @@ function Chatbot(props){
                 console.log(res)
             console.log(messages)
             setInputMessage("")
+            // if (res.data.output.explanation === ""){
             if (res){
-                if (res.data.output.explanation === ""){
+                if (false){
                     const returnMessage ={
                         isSent: true,
                         timeStamp: new Date(),

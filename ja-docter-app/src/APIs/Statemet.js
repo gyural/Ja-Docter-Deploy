@@ -1,9 +1,13 @@
 import axios from "axios"
 import instance from "./Instance"
-// const baseURL =  "http://127.0.0.1:8000/api"
-const baseURL =  "/api"
-// https://cors-anywhere.herokuapp.com/https://api.dropper.tech/covid19/status/korea?
+// const baseURL =  "/api"
+const baseURL =  "https://server.ja-doctor.net/api"
 
+
+//로컬 스토리지에서 토큰 확인후 헤더이 넣기
+const storedToken = localStorage.getItem('access_token');
+instance.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+console.log(`instance에 stored 토큰 추가`)
 
 // GET APIs
 

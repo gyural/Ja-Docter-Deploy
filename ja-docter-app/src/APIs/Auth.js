@@ -2,8 +2,11 @@ import axios from "axios"
 import { useContext } from "react";
 import api from './API'
 import instance from "./Instance";
-const baseURL = '/api'
-// const baseURL = 'http://43.200.184.226/api'
+// const baseURL = '/api'
+const baseURL = 'https://server.ja-doctor.net/api'
+
+// const baseURL = 'http://127.0.0.1:8000/api'
+
 
 
 const login = async (email, pw, isChecked) => {
@@ -15,7 +18,9 @@ const login = async (email, pw, isChecked) => {
     }
     const finaldata = JSON.stringify(requestData)
     console.log(finaldata)
-    return await instance.post(apiURL, finaldata)
+    return await axios.post(apiURL, finaldata, {headers: {
+        'Content-Type': 'application/json',
+      }})
     .then((response) => {
         const accessToken = response.data.token.access;
         instance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
@@ -29,6 +34,18 @@ const login = async (email, pw, isChecked) => {
         alert('로그인 실패');
         throw error;
     })
+}
+
+/**
+ * 
+ * @returns 로그아웃 완료후 메시지를 리턴
+ */
+const logOut =  async() => {
+    // axios 헤더의 access 토큰 제거
+    instance.defaults.headers.common['Authorization'] = ``;
+    // 로컬스토리지에서 access 토큰 제거
+    localStorage.removeItem('access_token');
+    return 'logout 완료'
 }
 
 const register = (email, pw) => {
@@ -51,6 +68,18 @@ const register = (email, pw) => {
         // 백엔드에서 자동으로 리프레시 해주므로 구현할 필요없음
         alert('회원가입 실패');
         return false;
+    })
+}
+
+const getUserAuth =  () =>{
+    const apiURL = baseURL + "/user/auth/"
+
+    return instance.get(apiURL, {withCredentials:true})
+    .then((response) =>{
+        return(response)
+    }).catch((error) => {
+        console.log(error)
+        console.log('Get User Auch 실패!!')
     })
 }
 const refresh = async () => {
@@ -88,4 +117,4 @@ const refresh_interceptor = () => {
         }
       );
 }
-export {login, register, refresh_interceptor};
+export {login, register, refresh_interceptor, getUserAuth, logOut};

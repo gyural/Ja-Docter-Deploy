@@ -25,7 +25,9 @@ const StatementContainer = styled.div`
   height: 83vh;
   box-sizing: border-box;
   padding: 10px;
-  position: relative;
+  position: absolute;
+  right: 5%;
+
 `;
 /**
  * 홈 > 실시간 무료 첨삭
@@ -39,13 +41,13 @@ const Smalltext = styled.p`
  * 자소서 박스
  */
 const BoxContainer = styled.div`
-  border: none;
   width: 100%;
   padding: 10px;
   margin-top: 20px;
   max-height: 89%;
   overflow-y: auto;
-
+  position: relative;
+  
   &::-webkit-scrollbar {
      width: 10px;
     }
@@ -155,32 +157,37 @@ const ArrowText = styled.p`
 `;
 
 const ChatBotWrapper = styled.div`
-  position: absolute;
-  left: -490px;
+  position: fixed;
+  left: 2%;
   top: 20px;
+  width: 464px;
+  height: 554px;
+  z-index: ${props => props.chatON ? '2' : '0'};
 `;
 
 const ChatBotSwitch = styled.div`
   width: 50px;
   height: 50px;
   position: absolute;
-  bottom: -50px;
-  right: -10px;
+  bottom: 0px;
+  cursor: pointer;
+  right: -11%;
   z-index: 10;
   img{
       display: block;
       width: 100%;
       height: 100%;
   }
-  &:hover{
+  /* &:hover{
       background-color: #ccc
 
-  }
+  } */
 `
 function  DetailsPage() {
   const navigate = useNavigate()
   const [id, setId] = useState()
   const [chatON, setChatON] = useState()
+  console.log(chatON)
   const [statementData, setStatementData] = useState([{
     version : '',
     content : ''
@@ -325,7 +332,9 @@ function  DetailsPage() {
           <Smalltext>홈 {'>'} 실시간 무료 첨삭</Smalltext>
           <BoxContainer>
             <BoxTitle>{title.title}</BoxTitle>
-            <ChatBotWrapper>
+            <ChatBotWrapper
+              chatON = {chatON}
+            >
               <ChatBotSwitch
                 onClick = {()=>{
                   setChatON(!chatON)
